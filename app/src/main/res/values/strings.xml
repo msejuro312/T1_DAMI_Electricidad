@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Consumo eléctrico mensual</string>
+    <string name="titulo_principal">Consumo eléctrico mensual</string>
+    <string name="subtitulo_principal">Estime el consumo mensual y el costo de un equipo.</string>
+    <string name="seccion_datos">Datos del cálculo</string>
+    <string name="instruccion_formulario">Complete todos los campos y pulse Calcular.</string>
+    <string name="hint_nombre">Nombre</string>
+    <string name="hint_potencia">Potencia del equipo</string>
+    <string name="hint_horas">Horas diarias de uso</string>
+    <string name="unidad_primero">W</string>
+    <string name="unidad_segundo">h/día</string>
+    <string name="unidad_tercero">S/ por kWh</string>
+    <string name="boton_calcular">Calcular</string>
+    <string name="boton_volver">Volver</string>
+    <string name="resultado_titulo">Resultado</string>
+    <string name="resultado_descripcion">Resumen de la evaluación</string>
+    <string name="resultado_nombre_inicial">Nombre del usuario</string>
+    <string name="resultado_nombre_formato">Resultado de %1$s</string>
+    <string name="resultado_primario_inicial">Consumo mensual: —</string>
+    <string name="resultado_primario_formato">Consumo mensual: %1$.2f kWh</string>
+    <string name="resultado_secundario_inicial">Costo mensual: —</string>
+    <string name="resultado_nota">Reglas didácticas definidas para este examen.</string>
+    <string name="valor_no_disponible">Pendiente</string>
+    <string name="error_calculo">El resultado supera el rango permitido para el cálculo</string>
+
+    //E03
+    <string name="hint_tarifa">Tarifa por kWh</string>
+    <string name="error_nombre">Ingrese su nombre</string>
+    <string name="error_potencia">Ingrese una potencia mayor que 0 y hasta 10000</string>
+    <string name="error_horas">Ingrese horas mayores que 0 y hasta 24</string>
+    <string name="error_tarifa">Ingrese una tarifa mayor que 0 y hasta 10</string>
+    <string name="resultado_secundario_formato">Costo mensual: S/ %1$.2f</string>
+    <string name="clasificacion_1">Consumo bajo</string>
+    <string name="clasificacion_2">Consumo moderado</string>
+    <string name="clasificacion_3">Consumo alto</string>
+
+
+</resources>
