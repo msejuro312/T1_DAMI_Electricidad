@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Guía de Arquitectura - Consumo Eléctrico Mensual (T01)</title>
+<style>
+  @page { margin: 1.4cm 1.2cm; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    color: #111111;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    border-bottom: 3px solid #30204D;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-size: 17pt;
+    color: #30204D;
+    margin: 0 0 6px 0;
+  }
+
+  .subtitulo {
+    font-size: 10pt;
+    color: #444444;
+    margin: 2px 0;
+  }
+
+  h2 {
+    font-size: 13.5pt;
+    color: #30204D;
+    border-bottom: 2px solid #30204D;
+    padding-bottom: 3px;
+    margin-top: 26px;
+    break-after: avoid;
+  }
+
+  h3 {
+    font-size: 11.5pt;
+    color: #111111;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    break-after: avoid;
+  }
+
+  h4 {
+    font-size: 10.5pt;
+    color: #30204D;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    break-after: avoid;
+  }
+
+  p { margin: 6px 0; }
+
+  ul, ol { margin: 6px 0 6px 20px; padding-left: 8px; }
+  li { margin: 3px 0; }
+
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    background: #f2f2f2;
+    border: 1px solid #dddddd;
+    padding: 0 3px;
+    font-size: 9.5pt;
+  }
+
+  pre {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 8.5pt;
+    line-height: 1.3;
+    background: #f7f7f7;
+    border: 1px solid #bbbbbb;
+    padding: 8px 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin: 6px 0 12px 0;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 8.5pt;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+    font-size: 9.5pt;
+  }
+
+  th, td {
+    border: 1px solid #888888;
+    padding: 4px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th { background: #eceff4; }
+
+  .nota {
+    border: 1px solid #999999;
+    background: #f5f7fa;
+    padding: 7px 10px;
+    margin: 10px 0;
+    font-size: 10pt;
+  }
+
+  .archivo {
+    font-weight: bold;
+    color: #30204D;
+  }
+
+  .etiqueta {
+    display: inline-block;
+    border: 1px solid #30204D;
+    color: #30204D;
+    font-size: 9pt;
+    font-weight: bold;
+    padding: 1px 7px;
+    margin-right: 6px;
+  }
+
+  .diagrama {
+    text-align: center;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+
+  .caja {
+    display: inline-block;
+    border: 1.5px solid #30204D;
+    background: #ffffff;
+    padding: 7px 10px;
+    margin: 3px;
+    min-width: 130px;
+    font-weight: bold;
+  }
+
+  .caja small { display: block; font-weight: normal; color: #555555; }
+
+  .flecha { font-size: 14pt; color: #30204D; padding: 0 4px; }
+
+  .linea-diag { display: block; margin: 6px 0; }
+
+  .indice {
+    border: 1px solid #999999;
+    background: #fafafa;
+    padding: 8px 14px;
+    font-size: 10pt;
+  }
+  .indice a { color: #111111; text-decoration: none; }
+  .indice li { margin: 2px 0; }
+
+  .fin {
+    margin-top: 24px;
+    border-top: 2px solid #30204D;
+    padding-top: 6px;
+    font-size: 9pt;
+    color: #555555;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Guía de Arquitectura y Funcionamiento</h1>
+  <p class="subtitulo"><strong>Aplicación:</strong> Consumo Eléctrico Mensual — Evaluación T01, Variante C</p>
+  <p class="subtitulo"><strong>Curso:</strong> Desarrollo de Aplicaciones Móviles I — Instituto Superior Tecnológico Privado Cibertec</p>
+  <p class="subtitulo"><strong>Contenido:</strong> arquitectura del proyecto, flujo de ejecución, conceptos clave y código completo de todos los archivos modificados con su explicación.</p>
+</header>
+
+<div class="indice">
+  <strong>Índice</strong>
+  <ol>
+    <li><a href="#s1">¿Qué hace la aplicación?</a></li>
+    <li><a href="#s2">Arquitectura del proyecto: sus partes</a></li>
+    <li><a href="#s3">Flujo de ejecución paso a paso</a></li>
+    <li><a href="#s4">Conceptos clave explicados</a></li>
+    <li><a href="#s5">Archivos modificados y su código completo</a>
+      <ol>
+        <li><a href="#s51">app/build.gradle.kts (E01)</a></li>
+        <li><a href="#s52">res/values/strings.xml (E03)</a></li>
+        <li><a href="#s53">AndroidManifest.xml (E06)</a></li>
+        <li><a href="#s54">res/layout/activity_main.xml (E02)</a></li>
+        <li><a href="#s55">res/layout/activity_resultado.xml (E03)</a></li>
+        <li><a href="#s56">MainActivity.kt (E04, E05 y E06)</a></li>
+        <li><a href="#s57">ResultadoActivity.kt (E06)</a></li>
+      </ol>
+    </li>
+    <li><a href="#s6">Pruebas: casos de aceptación</a></li>
+    <li><a href="#s7">Errores típicos que se corrigieron</a></li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="s1">1. ¿Qué hace la aplicación?</h2>
+
+<p>Es una app Android que <strong>estima el consumo mensual de energía eléctrica y su costo</strong> de un equipo. El usuario ingresa cuatro datos en un formulario:</p>
+
+<ol>
+  <li><strong>Nombre</strong> del usuario (texto).</li>
+  <li><strong>Potencia del equipo</strong> en vatios (W), entre 0 (excluido) y 10000.</li>
+  <li><strong>Horas de uso diario</strong> (h/día), entre 0 (excluido) y 24.</li>
+  <li><strong>Tarifa por kWh</strong> en soles (S/), entre 0 (excluido) y 10.</li>
+</ol>
+
+<p>Al pulsar <em>Calcular</em>, la app aplica estas dos fórmulas considerando un mes de <strong>30 días</strong>:</p>
+
+<pre><code>Consumo mensual (kWh) = (potencia / 1000) x horas x 30
+Costo mensual (S/)    = consumo mensual x tarifa
+</code></pre>
+
+<p>Después clasifica el consumo en tres niveles y envía los resultados a una segunda pantalla (pantalla de resultado), donde se muestran los valores con dos decimales y la clasificación. Un botón <em>Volver</em> regresa al formulario sin perder lo que el usuario escribió.</p>
+
+<table>
+  <tr><th>Clasificación</th><th>Regla (consumo sin redondear)</th></tr>
+  <tr><td>Consumo bajo</td><td>consumo &le; 100 kWh</td></tr>
+  <tr><td>Consumo moderado</td><td>100 kWh &lt; consumo &le; 200 kWh</td></tr>
+  <tr><td>Consumo alto</td><td>consumo &gt; 200 kWh</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="s2">2. Arquitectura del proyecto: sus partes</h2>
+
+<p>El proyecto es una app Android estándar escrita en <strong>Kotlin</strong> con interfaz en <strong>XML</strong> (no usa Compose). Su arquitectura es simple: <strong>dos pantallas (Activities)</strong> que se comunican pasando datos por un <strong>Intent</strong>, más los recursos visuales y de texto en XML.</p>
+
+<div class="diagrama">
+  <span class="linea-diag">
+    <span class="caja">activity_main.xml<small>Formulario (vista)</small></span>
+    <span class="flecha">&rarr;</span>
+    <span class="caja">MainActivity.kt<small>Valida, calcula, clasifica</small></span>
+    <span class="flecha">&rarr;</span>
+    <span class="caja">Intent + extras<small>nombre, primario,<br>secundario, clasificacion</small></span>
+    <span class="flecha">&rarr;</span>
+    <span class="caja">ResultadoActivity.kt<small>Recibe y muestra</small></span>
+    <span class="flecha">&rarr;</span>
+    <span class="caja">activity_resultado.xml<small>Resultado (vista)</small></span>
+  </span>
+  <span class="linea-diag">
+    <span class="caja">buttonVolver &rarr; finish()<small>Regresa al formulario con los datos intactos</small></span>
+  </span>
+</div>
+
+<h3>2.1 Archivos del proyecto y qué rol cumple cada uno</h3>
+
+<table>
+  <tr><th>Archivo</th><th>Rol</th></tr>
+  <tr>
+    <td class="archivo">app/build.gradle.kts</td>
+    <td>Configuración de compilación. Aquí se <strong>habilitó ViewBinding</strong> (E01).</td>
+  </tr>
+  <tr>
+    <td class="archivo">app/src/main/AndroidManifest.xml</td>
+    <td>Declara las actividades ante Android. Aquí se <strong>registró ResultadoActivity</strong> (E06).</td>
+  </tr>
+  <tr>
+    <td class="archivo">res/layout/activity_main.xml</td>
+    <td>Vista del formulario. Aquí se <strong>agregó el campo de tarifa</strong> (E02).</td>
+  </tr>
+  <tr>
+    <td class="archivo">res/layout/activity_resultado.xml</td>
+    <td>Vista del resultado. Aquí se <strong>agregó textViewSecundario</strong> (E03).</td>
+  </tr>
+  <tr>
+    <td class="archivo">res/values/strings.xml</td>
+    <td>Todos los textos de la app. Aquí se <strong>crearon los 9 recursos faltantes</strong> (E03).</td>
+  </tr>
+  <tr>
+    <td class="archivo">res/values/colors.xml<br>res/values/dimens.xml</td>
+    <td>Colores y tamaños (no se modificaron; se reutilizaron los entregados: <code>azul_oscuro</code>, <code>text_section</code>, <code>item_gap</code>, etc.).</td>
+  </tr>
+  <tr>
+    <td class="archivo">java/.../MainActivity.kt</td>
+    <td>Pantalla 1: lee el formulario, <strong>valida</strong>, <strong>calcula</strong>, <strong>clasifica</strong> y <strong>navega</strong> (E04, E05, E06).</td>
+  </tr>
+  <tr>
+    <td class="archivo">java/.../ResultadoActivity.kt</td>
+    <td>Pantalla 2: <strong>recibe</strong> los extras, <strong>muestra</strong> los datos y <strong>vuelve</strong> con finish() (E06).</td>
+  </tr>
+</table>
+
+<div class="nota"><strong>Idea central de la arquitectura:</strong> cada Activity tiene su vista XML y su archivo Kotlin. La lógica (validación y cálculo) vive únicamente en <strong>MainActivity</strong>; <strong>ResultadoActivity</strong> solo recibe y muestra. No hay clases de modelo ni bases de datos: los datos viajan de una pantalla a otra dentro del Intent.</div>
+
+<!-- ================================================================ -->
+<h2 id="s3">3. Flujo de ejecución paso a paso</h2>
+
+<ol>
+  <li><strong>Arranque:</strong> Android lanza <code>MainActivity</code>. En <code>onCreate()</code> se infla <code>activity_main.xml</code> con ViewBinding y se muestra el formulario.</li>
+  <li><strong>Registro de eventos:</strong> se asocia el botón <em>Calcular</em> a la función <code>calcularYMostrarResultado()</code> y se configuran los cuatro <code>doAfterTextChanged</code> para borrar el error de cada campo cuando el usuario escribe de nuevo.</li>
+  <li><strong>Lectura:</strong> al pulsar el botón se leen los 4 valores. El nombre se convierte a texto limpio (<code>trim()</code>); los tres números pasan por funciones <code>leerX()</code> que devuelven <code>Double</code> o <code>null</code> si el dato no es válido.</li>
+  <li><strong>Validación (E04):</strong> si el nombre está vacío o algún número es <code>null</code>, se muestra el mensaje de error en el <code>TextInputLayout</code> correspondiente y la función hace <code>return</code>: <strong>no se navega</strong>.</li>
+  <li><strong>Cálculo (E05):</strong> con datos válidos se calcula el consumo y el costo con <code>Double</code> (sin redondear).</li>
+  <li><strong>Verificación de finitud:</strong> si el resultado no fuera un número finito, se muestra <code>error_calculo</code> y no se navega.</li>
+  <li><strong>Clasificación (E05):</strong> un <code>when</code> decide entre "Consumo bajo", "Consumo moderado" o "Consumo alto".</li>
+  <li><strong>Navegación (E06):</strong> se crea un <code>Intent</code> hacia <code>ResultadoActivity</code> y se cargan 4 extras: <code>"nombre"</code> (String), <code>"primario"</code> (Double: consumo), <code>"secundario"</code> (Double: costo) y <code>"clasificacion"</code> (String). Luego <code>startActivity(intent)</code>.</li>
+  <li><strong>Presentación:</strong> <code>ResultadoActivity.onCreate()</code> infla su layout, llama a <code>mostrarResultado()</code> que lee los extras con <code>getStringExtra</code>/<code>getDoubleExtra</code> y los escribe en los cuatro TextView usando strings con formato (%1$.2f = dos decimales).</li>
+  <li><strong>Regreso:</strong> <code>buttonVolver</code> ejecuta <code>finish()</code>, destruye la pantalla de resultado y deja <code>MainActivity</code> viva con todo el formulario tal como estaba.</li>
+</ol>
+
+<!-- ================================================================ -->
+<h2 id="s4">4. Conceptos clave explicados</h2>
+
+<h3>ViewBinding (E01)</h3>
+<p>Mecanismo que genera automáticamente una clase (<code>ActivityMainBinding</code>) a partir del archivo XML. Permite acceder a los controles por su <code>id</code> sin usar <code>findViewById()</code>. Requiere dos pasos: habilitarlo en Gradle con <code>buildFeatures { viewBinding = true }</code> y luego, en cada Activity, <em>inflar</em> el layout:</p>
+<pre><code>binding = ActivityMainBinding.inflate(layoutInflater)
+setContentView(binding.root)
+</code></pre>
+<p>Después, cada control se usa como <code>binding.editTextNombre</code>, <code>binding.buttonCalcular</code>, etc. Compilador detecta errores de id en tiempo de compilación.</p>
+
+<h3>Activity</h3>
+<p>Una pantalla con su propio ciclo de vida. <code>onCreate()</code> es el método que se ejecuta al crearla: ahí se configura la vista y los eventos. <code>finish()</code> la cierra y regresa a la anterior.</p>
+
+<h3>Intent y extras (E06)</h3>
+<p>Un <code>Intent</code> es el mensaje que pide a Android abrir otra Activity. Los <em>extras</em> son los datos que viajan dentro de ese mensaje, como un sobre con pares clave/valor:</p>
+<pre><code>putExtra("primario", consumo)              // envía un Double
+val c = intent.getDoubleExtra("primario", 0.0)  // recibe el Double
+</code></pre>
+<p><strong>Reglas importantes del examen:</strong> las claves deben coincidir exactamente (un error de tipeo como <code>"secunadario"</code> haría que el dato no llegue), los números se envían como <code>Double</code> (nunca convertidos a String) y no se usan Serializable/Parcelable ni clases de modelo.</p>
+
+<h3>Validación con funciones que devuelven nullable</h3>
+<p>Cada campo numérico tiene una función <code>leerX(valor: String): Double?</code>. El signo <code>?</code> significa que puede devolver un número <strong>o</strong> <code>null</code> (dato inválido). La función aplica cuatro filtros en orden:</p>
+<ol>
+  <li><code>trim()</code>: quita espacios al inicio y final.</li>
+  <li><code>replace(',','.')</code>: acepta coma decimal (opcional) normalizándola a punto.</li>
+  <li><code>toDoubleOrNull()</code>: si el texto no es número (vacío, letras) devuelve <code>null</code>.</li>
+  <li><code>isFinite()</code>: descarta <code>NaN</code> e <code>Infinity</code>; luego verifica el rango permitido.</li>
+</ol>
+<p>Así, con una sola línea se rechazan vacíos, texto, ceros, negativos y valores fuera de límite.</p>
+
+<h3>Limpiar errores con doAfterTextChanged</h3>
+<p>Se registra un escuchador por campo: en cuanto el usuario escribe, el error se pone en <code>null</code> y desaparece de la pantalla. Así el formulario no queda "enrojecido" si el usuario corrige el dato.</p>
+
+<h3>when (clasificación)</h3>
+<p>Es el equivalente a <code>switch</code> de Kotlin, pero permite comparar condiciones. Se evalúa de arriba hacia abajo y se detiene en la primera condición verdadera:</p>
+<pre><code>return when {
+    consumo &lt;= CONSUMO_BAJO     -&gt; getString(R.string.clasificacion_1) // &le; 100
+    consumo &lt;= CONSUMO_MODERADO -&gt; getString(R.string.clasificacion_2) // &le; 200
+    else                        -&gt; getString(R.string.clasificacion_3) // resto
+}
+</code></pre>
+<p>Los <code>valores límite</code> están en <code>companion object</code> como constantes: se escriben una vez (<code>100.0</code>, <code>200.0</code>) y se reutilizan; además evitan "números mágicos" en el código.</p>
+
+<h3>Recursos de texto con formato</h3>
+<p>Nunca se escriben los textos "a mano" dentro del Kotlin: se definen en <code>strings.xml</code> y se cargan con <code>getString()</code>. Para incluir números se usan marcadores:</p>
+<pre><code>&lt;string name="resultado_primario_formato"&gt;Consumo mensual: %1$.2f kWh&lt;/string&gt;
+</code></pre>
+<p><code>%1$.2f</code> significa: primer argumento, formato decimal con <strong>2 cifras después del punto</strong>. Al llamar <code>getString(R.string.resultado_primario_formato, primario)</code> el 150 se convierte en <code>150.00</code>. La ventaja: si mañana cambia el texto, no se toca el Kotlin.</p>
+
+<!-- ================================================================ -->
+<h2 id="s5">5. Archivos modificados y su código completo</h2>
+
+<p>A continuación se muestra el código <strong>tal como quedó en el proyecto final</strong> de cada archivo que se modificó durante la evaluación, seguido de la explicación de cada parte.</p>
+
+<!-- ---------------- 5.1 ---------------- -->
+<h3 id="s51">5.1 app/build.gradle.kts — <span class="etiqueta">E01</span> Habilitar ViewBinding</h3>
+
+<p><strong>Qué se hizo:</strong> se agregó el bloque <code>buildFeatures</code> dentro de <code>android { }</code>. No se agregaron dependencias ni se cambiaron versiones (tal como exige el enunciado).</p>
+
+<pre><code>import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
+
+android {
+    namespace = "com.cibertec.electricidad"
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = "com.cibertec.electricidad"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
+
+    //E01
+
+    buildFeatures{
+        viewBinding = true
+    }
+
+}
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+}</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li><strong><code>buildFeatures { viewBinding = true }</code></strong> es la adición de la evaluación: le dice a Gradle que genere las clases <code>ActivityMainBinding</code> y <code>ActivityResultadoBinding</code> a partir de los layouts. Sin esta línea, los <code>import ...databinding...</code> de las Activities no existirían y nada compilaría.</li>
+  <li><strong><code>namespace / applicationId</code></strong>: identifican al paquete de la app (<code>com.cibertec.electricidad</code>); de ahí salen los imports y el paquete <code>R</code>.</li>
+  <li><strong><code>minSdk = 26</code></strong>: versión Android mínima soportada. <strong><code>compileSdk / targetSdk = 36</code></strong>: versión con la que se compila y apunta.</li>
+  <li><strong><code>JavaVersion.VERSION_17</code></strong>: nivel de Java/Kotlin usado por el compilador.</li>
+  <li><strong><code>dependencies</code></strong>: librerías base (AppCompat, Material para los <code>TextInputLayout</code> y botones, ConstraintLayout). No se tocaron.</li>
+</ul>
+
+<!-- ---------------- 5.2 ---------------- -->
+<h3 id="s52">5.2 res/values/strings.xml — <span class="etiqueta">E03</span> Los 9 recursos faltantes</h3>
+
+<p><strong>Qué se hizo:</strong> se agregaron los 9 recursos que el enunciado pedía (recurso, valor solicitado): <code>hint_tarifa</code>, <code>error_nombre</code>, <code>error_potencia</code>, <code>error_horas</code>, <code>error_tarifa</code>, <code>resultado_secundario_formato</code>, <code>clasificacion_1</code>, <code>clasificacion_2</code> y <code>clasificacion_3</code>.</p>
+
+<pre><code>&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;resources&gt;
+    &lt;string name="app_name"&gt;Consumo eléctrico mensual&lt;/string&gt;
+    &lt;string name="titulo_principal"&gt;Consumo eléctrico mensual&lt;/string&gt;
+    &lt;string name="subtitulo_principal"&gt;Estime el consumo mensual y el costo de un equipo.&lt;/string&gt;
+    &lt;string name="seccion_datos"&gt;Datos del cálculo&lt;/string&gt;
+    &lt;string name="instruccion_formulario"&gt;Complete todos los campos y pulse Calcular.&lt;/string&gt;
+    &lt;string name="hint_nombre"&gt;Nombre&lt;/string&gt;
+    &lt;string name="hint_potencia"&gt;Potencia del equipo&lt;/string&gt;
+    &lt;string name="hint_horas"&gt;Horas diarias de uso&lt;/string&gt;
+    &lt;string name="unidad_primero"&gt;W&lt;/string&gt;
+    &lt;string name="unidad_segundo"&gt;h/día&lt;/string&gt;
+    &lt;string name="unidad_tercero"&gt;S/ por kWh&lt;/string&gt;
+    &lt;string name="boton_calcular"&gt;Calcular&lt;/string&gt;
+    &lt;string name="boton_volver"&gt;Volver&lt;/string&gt;
+    &lt;string name="resultado_titulo"&gt;Resultado&lt;/string&gt;
+    &lt;string name="resultado_descripcion"&gt;Resumen de la evaluación&lt;/string&gt;
+    &lt;string name="resultado_nombre_inicial"&gt;Nombre del usuario&lt;/string&gt;
+    &lt;string name="resultado_nombre_formato"&gt;Resultado de %1$s&lt;/string&gt;
+    &lt;string name="resultado_primario_inicial"&gt;Consumo mensual: —&lt;/string&gt;
+    &lt;string name="resultado_primario_formato"&gt;Consumo mensual: %1$.2f kWh&lt;/string&gt;
+    &lt;string name="resultado_secundario_inicial"&gt;Costo mensual: —&lt;/string&gt;
+    &lt;string name="resultado_nota"&gt;Reglas didácticas definidas para este examen.&lt;/string&gt;
+    &lt;string name="valor_no_disponible"&gt;Pendiente&lt;/string&gt;
+    &lt;string name="error_calculo"&gt;El resultado supera el rango permitido para el cálculo&lt;/string&gt;
+
+
+    &lt;string name="hint_tarifa"&gt;Tarifa por kWh&lt;/string&gt;
+    &lt;string name="error_nombre"&gt;Ingrese su nombre&lt;/string&gt;
+    &lt;string name="error_potencia"&gt;Ingrese una potencia mayor que 0 y hasta 10000&lt;/string&gt;
+    &lt;string name="error_horas"&gt;Ingrese horas mayores que 0 y hasta 24&lt;/string&gt;
+    &lt;string name="error_tarifa"&gt;Ingrese una tarifa mayor que 0 y hasta 10&lt;/string&gt;
+    &lt;string name="resultado_secundario_formato"&gt;Costo mensual: S/ %1$.2f&lt;/string&gt;
+    &lt;string name="clasificacion_1"&gt;Consumo bajo&lt;/string&gt;
+    &lt;string name="clasificacion_2"&gt;Consumo moderado&lt;/string&gt;
+    &lt;string name="clasificacion_3"&gt;Consumo alto&lt;/string&gt;
+
+
+&lt;/resources&gt;</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li>Cada <code>&lt;string name="..."&gt;</code> genera un identificador en la clase <code>R</code> (por ejemplo <code>R.string.error_tarifa</code>) que se usa desde Kotlin con <code>getString()</code>.</li>
+  <li><strong>Hints</strong> (<code>hint_tarifa</code>): textos que aparecen flotando dentro del campo de formulario. <code>hint_tarifa = "Tarifa por kWh"</code> se referencia desde el layout con <code>@string/hint_tarifa</code>.</li>
+  <li><strong>Mensajes de error</strong> (<code>error_nombre</code>, <code>error_potencia</code>, <code>error_horas</code>, <code>error_tarifa</code>): se muestran debajo del campo cuando la validación falla.</li>
+  <li><strong>Formatos de resultado</strong>: <code>resultado_secundario_formato = "Costo mensual: S/ %1$.2f"</code> recibe el Double del costo y lo imprime con 2 decimales. El equivalente del consumo (<code>resultado_primario_formato</code>) ya venía en la base.</li>
+  <li><strong>Clasificaciones</strong> (<code>clasificacion_1/2/3</code>): los tres textos posibles que devuelve el <code>when</code>.</li>
+  <li><strong>Nota importante:</strong> en XML los comentarios son <code>&lt;!-- ... --&gt;</code>; escribir <code>//</code> (comentario de Kotlin) rompe el archivo y falla la compilación de recursos.</li>
+</ul>
+
+<!-- ---------------- 5.3 ---------------- -->
+<h3 id="s53">5.3 AndroidManifest.xml — <span class="etiqueta">E06</span> Registrar ResultadoActivity</h3>
+
+<p><strong>Qué se hizo:</strong> se agregó el bloque de la segunda actividad con <code>android:exported="false"</code>.</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"&gt;
+
+    &lt;application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ExamenBeca"&gt;
+        &lt;activity
+            android:name=".MainActivity"
+            android:exported="true"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN" /&gt;
+
+                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;activity
+            android:name=".ResultadoActivity"
+            android:exported="false"&gt;
+
+        &lt;/activity&gt;
+    &lt;/application&gt;
+
+&lt;/manifest&gt;</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li><strong><code>android:name=".ResultadoActivity"</code></strong>: registra la clase ante el sistema. Si falta esta línea, al hacer <code>Intent(this, ResultadoActivity::class.java)</code> la app <strong>crashea</strong> con <em>ActivityNotFoundException</em>. El punto inicial significa "paquete raíz del proyecto".</li>
+  <li><strong><code>exported="false"</code></strong>: solo esta app puede abrir esa pantalla (es un requisito del enunciado; como no tiene <code>intent-filter</code>, es lo correcto).</li>
+  <li><strong><code>MainActivity</code></strong> tiene <code>exported="true"</code> y un <code>intent-filter</code> con MAIN/LAUNCHER: por eso es la pantalla de inicio visible en el ícono del celular.</li>
+  <li><strong><code>android:label</code></strong>: nombre de la app mostrado por Android (viene de <code>app_name</code> en strings.xml).</li>
+</ul>
+
+<!-- ---------------- 5.4 ---------------- -->
+<h3 id="s54">5.4 res/layout/activity_main.xml — <span class="etiqueta">E02</span> Campo de tarifa</h3>
+
+<p><strong>Qué se hizo:</strong> se agregó, <em>antes de</em> <code>buttonCalcular</code>, el <code>TextInputLayout inputLayoutTarifa</code> con su <code>TextInputEditText editTextTarifa</code>, reutilizando el estilo de los campos existentes.</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"&gt;
+
+    &lt;LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding"&gt;
+
+        &lt;LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_panel_hero"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding"&gt;
+
+            &lt;TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/titulo_principal"
+                android:textColor="@color/blanco"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" /&gt;
+
+            &lt;TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap_small"
+                android:text="@string/subtitulo_principal"
+                android:textColor="@color/blanco_suave"
+                android:textSize="@dimen/text_body" /&gt;
+        &lt;/LinearLayout&gt;
+
+        &lt;LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/section_gap"
+            android:background="@drawable/bg_surface_panel"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding"&gt;
+
+            &lt;TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/seccion_datos"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="@dimen/text_section"
+                android:textStyle="bold" /&gt;
+
+            &lt;TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap_small"
+                android:text="@string/instruccion_formulario"
+                android:textColor="@color/gris_texto"
+                android:textSize="@dimen/text_body" /&gt;
+
+            &lt;com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutNombre"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/section_gap"
+                android:hint="@string/hint_nombre"&gt;
+
+                &lt;com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="personName"
+                    android:inputType="textCapWords" /&gt;
+            &lt;/com.google.android.material.textfield.TextInputLayout&gt;
+
+            &lt;com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutPotencia"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap"
+                android:hint="@string/hint_potencia"
+                app:suffixText="@string/unidad_primero"&gt;
+
+                &lt;com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextPotencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal" /&gt;
+            &lt;/com.google.android.material.textfield.TextInputLayout&gt;
+
+            &lt;com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutHoras"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap"
+                android:hint="@string/hint_horas"
+                app:suffixText="@string/unidad_segundo"&gt;
+
+                &lt;com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextHoras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal" /&gt;
+            &lt;/com.google.android.material.textfield.TextInputLayout&gt;
+
+            &lt;!--E02--&gt;
+
+            &lt;com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutTarifa"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap"
+                android:hint="@string/hint_tarifa"
+                app:suffixText="@string/unidad_tercero"&gt;
+
+                &lt;com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextTarifa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="numberDecimal" /&gt;
+            &lt;/com.google.android.material.textfield.TextInputLayout&gt;
+
+            &lt;com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCalcular"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginTop="@dimen/section_gap"
+                android:text="@string/boton_calcular"
+                android:textAllCaps="false"
+                android:textStyle="bold" /&gt;
+        &lt;/LinearLayout&gt;
+    &lt;/LinearLayout&gt;
+&lt;/ScrollView&gt;</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li><strong><code>ScrollView</code> raíz:</strong> permite desplazar la pantalla si el formulario no cabe (fondo con <code>bg_screen</code>). Dentro hay <code>LinearLayout</code> verticales: uno con el encabezado (panel oscuro) y otro con la tarjeta blanca del formulario.</li>
+  <li><strong>Cada campo es un par</strong> <code>TextInputLayout</code> (contenedor que muestra el error y el hint) + <code>TextInputEditText</code> (el cuadro donde se escribe). El <code>id</code> del contenedor es el que se usa en Kotlin para mostrar errores: <code>binding.inputLayoutTarifa.error = ...</code>.</li>
+  <li><strong>Bloque agregado (E02):</strong>
+    <ul>
+      <li><code>android:id="@+id/inputLayoutTarifa"</code> y <code>"@+id/editTextTarifa"</code>: crean los ids nuevos que ViewBinding expone como <code>binding.inputLayoutTarifa</code> y <code>binding.editTextTarifa</code>.</li>
+      <li><code>android:hint="@string/hint_tarifa"</code>: texto flotante "Tarifa por kWh".</li>
+      <li><code>app:suffixText="@string/unidad_tercero"</code>: muestra "S/ por kWh" a la derecha del campo, igual que "W" y "h/día" en los otros dos.</li>
+      <li><code>android:inputType="numberDecimal"</code>: abre el teclado numérico con punto decimal (no deja escribir letras).</li>
+      <li><code>android:importantForAutofill="no"</code>: evita que el autocompletado intervenga en campos numéricos.</li>
+      <li><code>android:layout_marginTop="@dimen/item_gap"</code> y el mismo <code>style=OutlinedBox</code>: respeta el espaciado y el estilo de los campos existentes.</li>
+    </ul>
+  </li>
+  <li><strong>Orden:</strong> el campo quedó después de "Horas diarias de uso" y antes de <code>buttonCalcular</code>, tal como pide el enunciado y el prototipo.</li>
+  <li><strong>Referencias <code>@string/</code>, <code>@color/</code>, <code>@dimen/</code>:</strong> todo el texto, color y tamaño se lee de recursos; el XML no contiene valores "quemados".</li>
+</ul>
+
+<!-- ---------------- 5.5 ---------------- -->
+<h3 id="s55">5.5 res/layout/activity_resultado.xml — <span class="etiqueta">E03</span> textViewSecundario</h3>
+
+<p><strong>Qué se hizo:</strong> se agregó el <code>TextView textViewSecundario</code> <em>entre</em> <code>textViewPrimario</code> y <code>textViewClasificacionResultado</code>.</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"&gt;
+
+    &lt;LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding"&gt;
+
+        &lt;TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resultado_titulo"
+            android:textColor="@color/azul_oscuro"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold" /&gt;
+
+        &lt;TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_gap_small"
+            android:text="@string/resultado_descripcion"
+            android:textColor="@color/gris_texto"
+            android:textSize="@dimen/text_body" /&gt;
+
+        &lt;LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/section_gap"
+            android:background="@drawable/bg_surface_panel"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding"&gt;
+
+            &lt;TextView
+                android:id="@+id/textViewNombreResultado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/resultado_nombre_inicial"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="@dimen/text_section"
+                android:textStyle="bold" /&gt;
+
+            &lt;TextView
+                android:id="@+id/textViewPrimario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/section_gap"
+                android:text="@string/resultado_primario_inicial"
+                android:textColor="@color/azul_principal"
+                android:textSize="@dimen/text_result"
+                android:textStyle="bold" /&gt;
+
+            &lt;!--E03--&gt;
+
+            &lt;TextView
+                android:id="@+id/textViewSecundario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap"
+                android:text="@string/resultado_secundario_inicial"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="@dimen/text_section"
+                android:textStyle="bold" /&gt;
+
+            &lt;TextView
+                android:id="@+id/textViewClasificacionResultado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_gap"
+                android:background="@drawable/bg_estado_chip"
+                android:paddingHorizontal="@dimen/chip_padding_horizontal"
+                android:paddingVertical="@dimen/chip_padding_vertical"
+                android:text="@string/valor_no_disponible"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="@dimen/text_body"
+                android:textStyle="bold" /&gt;
+
+            &lt;TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/section_gap"
+                android:gravity="center"
+                android:text="@string/resultado_nota"
+                android:textColor="@color/gris_texto"
+                android:textSize="@dimen/text_caption" /&gt;
+        &lt;/LinearLayout&gt;
+
+        &lt;com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonVolver"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/section_gap"
+            android:text="@string/boton_volver"
+            android:textAllCaps="false"
+            android:textStyle="bold" /&gt;
+    &lt;/LinearLayout&gt;
+&lt;/ScrollView&gt;</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li><strong>Orden de los TextView dentro de la tarjeta:</strong> nombre &rarr; <code>textViewPrimario</code> (consumo, grande y en color principal) &rarr; <strong><code>textViewSecundario</code> (nuevo, costo)</strong> &rarr; <code>textViewClasificacionResultado</code> (chip con la clasificación) &rarr; nota al pie.</li>
+  <li><strong>Atributos exigidos para el TextView nuevo:</strong> <code>@dimen/text_section</code> (tamaño de texto de sección), <code>@dimen/item_gap</code> (separación con el elemento anterior), <code>@color/azul_oscuro</code> (color) y <code>@string/resultado_secundario_inicial</code> (texto por defecto "Costo mensual: —").</li>
+  <li><strong>Texto inicial vs. texto con formato:</strong> mientras no se calcule nada, el TextView muestra <code>resultado_secundario_inicial</code> ("Costo mensual: —"). Al recibir el resultado, Kotlin lo reemplaza por <code>resultado_secundario_formato</code> ("Costo mensual: S/ %1$.2f").</li>
+  <li><strong><code>textViewPrimario</code> y <code>textViewSecundario</code> no tienen "E03" fuera del XML:</strong> las marcas E02/E03 del examen solo son anotaciones; en el XML los comentarios válidos usan <code>&lt;!-- ... --&gt;</code>.</li>
+  <li><strong><code>buttonVolver</code>:</strong> existe en la base; en Kotlin se conecta a <code>finish()</code>.</li>
+</ul>
+
+<!-- ---------------- 5.6 ---------------- -->
+<h3 id="s56">5.6 MainActivity.kt — <span class="etiqueta">E04</span> <span class="etiqueta">E05</span> <span class="etiqueta">E06</span></h3>
+
+<p><strong>Qué se hizo:</strong> ViewBinding completo, los cuatro limpiadores de error, la validación del formulario, las lecturas seguras de los 3 números, ambos cálculos, la clasificación con <code>when</code>, la verificación de finitud y el envío de los 4 extras.</p>
+
+<pre><code>package com.cibertec.electricidad
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
+//E01
+import com.cibertec.electricidad.databinding.ActivityMainBinding
+
+// E01: agregar el import de ViewBinding después de habilitarlo en Gradle.
+class MainActivity : AppCompatActivity() {
+    // E01: declarar la propiedad binding para activity_main.xml.
+
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // E01: reemplazar la carga provisional por la inflación con ViewBinding.
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.buttonCalcular.setOnClickListener {
+            calcularYMostrarResultado()
+        }
+
+        binding.editTextNombre.doAfterTextChanged {
+            binding.inputLayoutNombre.error = null
+        }
+
+        binding.editTextPotencia.doAfterTextChanged {
+            binding.inputLayoutPotencia.error = null
+        }
+
+        binding.editTextHoras.doAfterTextChanged {
+            binding.inputLayoutHoras.error = null
+        }
+
+        binding.editTextTarifa.doAfterTextChanged {
+            binding.inputLayoutTarifa.error = null
+        }
+
+    }
+
+
+
+    private fun calcularYMostrarResultado(){
+
+    // E05: implementar ambos cálculos y la clasificación con when en esta Activity.
+        // Puede organizar la lógica en funciones privadas de esta misma Activity.
+        // E06: enviar directamente con Intent.putExtra: "nombre" y "clasificacion"
+
+        val nombre = binding.editTextNombre.text.toString().trim()
+        val potencia = leerPotencia(binding.editTextPotencia.text.toString())
+        val horas = leerHoras(binding.editTextHoras.text.toString())
+        val tarifa = leerTarifa(binding.editTextTarifa.text.toString())
+        var formularioValido = true
+
+        if (nombre.isBlank()){
+            binding.inputLayoutNombre.error = getString(R.string.error_nombre)
+            formularioValido = false
+
+        }
+
+        if (potencia == null){
+            binding.inputLayoutPotencia.error = getString(R.string.error_potencia)
+            formularioValido = false
+
+        }
+
+        if(horas == null){
+            binding.inputLayoutHoras.error = getString(R.string.error_horas)
+            formularioValido = false
+        }
+
+        if(tarifa == null){
+            binding.inputLayoutTarifa.error = getString(R.string.error_tarifa)
+            formularioValido = false
+        }
+
+        if(!formularioValido || potencia == null || horas == null || tarifa == null) {
+            return
+        }
+
+        val consumo = calcularConsumo(potencia,horas)
+
+        val costo = calcularCostoMensual(consumo,tarifa)
+
+        if(!consumo.isFinite() || !costo.isFinite()) {
+            binding.inputLayoutTarifa.error = getString(R.string.error_calculo)
+            return
+        }
+
+        val clasificacion = clasificarConsumo (consumo)
+
+
+        val intent = Intent(this, ResultadoActivity::class.java).apply {
+            putExtra("nombre",nombre)
+            putExtra("primario", consumo)
+            putExtra("secundario", costo)
+            putExtra("clasificacion",clasificacion)
+        }
+        startActivity(intent)
+
+
+    }
+
+    private fun leerPotencia (valor: String): Double? {
+        val normalizado = valor.trim().replace(',','.')
+        val potencia = normalizado.toDoubleOrNull() ?: return null
+        if(!potencia.isFinite()) return null
+        return if (potencia &gt; POTENCIA_MINIMA &amp;&amp; potencia &lt;= POTENCIA_MAXIMA) potencia else null
+    }
+
+    private fun leerHoras (valor: String): Double? {
+        val normalizado = valor.trim().replace(',','.')
+        val horas = normalizado.toDoubleOrNull() ?: return null
+        if(!horas.isFinite()) return null
+        return if (horas &gt; HORAS_MINIMA &amp;&amp; horas &lt;= HORAS_MAXIMA) horas else null
+    }
+
+    private fun leerTarifa (valor: String): Double? {
+        val normalizado = valor.trim().replace(',','.')
+        val tarifa = normalizado.toDoubleOrNull() ?: return null
+        if(!tarifa.isFinite()) return null
+        return if (tarifa &gt; TARIFA_MINIMA &amp;&amp; tarifa &lt;= TARIFA_MAXIMA) tarifa else null
+    }
+
+    private fun calcularConsumo(potencia: Double, horas: Double): Double{
+        return (potencia/1000) *horas * 30
+
+    }
+
+    private fun calcularCostoMensual(consumo: Double, tarifa: Double): Double{
+        return consumo*tarifa
+
+    }
+
+    private fun clasificarConsumo(consumo: Double): String{
+        return when {
+            consumo &lt;= CONSUMO_BAJO -&gt; getString(R.string.clasificacion_1)
+            consumo &lt;= CONSUMO_MODERADO -&gt; getString(R.string.clasificacion_2)
+            else -&gt; getString(R.string.clasificacion_3)
+
+        }
+    }
+
+    companion object {
+        const val POTENCIA_MAXIMA = 10000.0
+        const val POTENCIA_MINIMA = 0.0
+        const val HORAS_MAXIMA = 24.0
+        const val HORAS_MINIMA = 0.0
+        const val TARIFA_MAXIMA = 10.0
+        const val TARIFA_MINIMA = 0.0
+        const val CONSUMO_BAJO = 100.0
+
+        const val CONSUMO_MODERADO = 200.0
+
+
+
+    }
+
+
+}</code></pre>
+
+<h4>Explicación parte por parte</h4>
+
+<p><strong>a) Imports y ViewBinding (E01).</strong> <code>import android.content.Intent</code> sirve para navegar; <code>doAfterTextChanged</code> da el evento "se modificó el texto"; <code>ActivityMainBinding</code> es la clase generada a partir de <code>activity_main.xml</code>. La propiedad <code>private lateinit var binding</code> guarda ese objeto: <code>lateinit</code> indica que se inicializa después (en <code>onCreate</code>), no en el momento de declararla.</p>
+
+<p><strong>b) onCreate().</strong> Es el punto de entrada. Hace tres cosas: (1) infla el XML y lo muestra con <code>setContentView(binding.root)</code>; (2) conecta el botón <em>Calcular</em> a la función que hace todo el trabajo —<code>setOnClickListener</code> solo registra qué se ejecuta al pulsar—; (3) registra cuatro <code>doAfterTextChanged</code> que borran el error de cada campo en cuanto el usuario escribe de nuevo (cumple "limpiar errores al volver a calcular").</p>
+
+<p><strong>c) calcularYMostrarResultado() — el corazón del examen.</strong> Se ejecuta solo al pulsar el botón. Secuencia:</p>
+<ol>
+  <li><strong>Lectura:</strong> el nombre se obtiene con <code>.text.toString().trim()</code> (quita espacios). Los tres números pasan por <code>leerPotencia/leerHoras/leerTarifa</code>, que devuelven <code>Double</code> válido o <code>null</code>.</li>
+  <li><strong>Bandera <code>formularioValido</code>:</strong> comienza en <code>true</code>. Cada validación fallida la pone en <code>false</code> y coloca el mensaje en el campo indicado:
+    <ul>
+      <li>Nombre: <code>isBlank()</code> detecta vacío <em>o</em> solo espacios &rarr; error en <code>inputLayoutNombre</code>.</li>
+      <li>Potencia / horas / tarifa: basta con que sean <code>null</code> (la función <code>leerX</code> ya cubre vacío, texto, fuera de rango y no finito) &rarr; error en su respectivo <code>inputLayout</code>.</li>
+    </ul>
+    Se evalúan los cuatro campos siempre (no se corta con <code>else if</code>), por eso el usuario ve <strong>todos</strong> los errores de una sola vez.
+  </li>
+  <li><strong>Bloqueo de navegación:</strong> <code>if (!formularioValido || ...) return</code> detiene la función antes de calcular o abrir la otra pantalla. Este es el punto clave de la validación.</li>
+  <li><strong>Cálculo:</strong> <code>calcularConsumo()</code> y <code>calcularCostoMensual()</code> devuelven <code>Double</code> sin redondear.</li>
+  <li><strong>Finitud:</strong> si alguno no fuera finito (caso teórico de desbordamiento) se muestra <code>error_calculo</code> y se retorna sin navegar.</li>
+  <li><strong>Clasificación:</strong> <code>clasificarConsumo()</code> devuelve uno de los tres textos.</li>
+  <li><strong>Envío (E06):</strong> se construye el <code>Intent</code> con <code>.apply { }</code> para cargar los extras y se llama <code>startActivity(intent)</code>.</li>
+</ol>
+
+<p><strong>d) Las funciones <code>leerX(valor: String): Double?</code>.</strong> Las tres son idénticas salvo el rango. Paso a paso: normalizan el texto (trim + coma a punto), intentan convertir con <code>toDoubleOrNull()</code> (si falla &rarr; <code>null</code>), descartan números no finitos con <code>isFinite()</code> y finalmente exigen el rango. El operador <code>?: return null</code> significa: "si la conversión falló, devuelve <code>null</code> y no sigas". Así una sola función rechaza vacío, texto, 0, negativos y valores fuera de límite.</p>
+
+<p><strong>e) Los cálculos (E05).</strong> <code>calcularConsumo</code> aplica <code>(potencia/1000) * horas * 30</code>: la potencia en W se pasa a kW, se multiplica por las horas diarias y por los 30 días del mes. <code>calcularCostoMensual</code> multiplica ese consumo por la tarifa. Ambas declaran <strong><code>: Double</code></strong> como tipo de retorno.</p>
+
+<p><strong>f) La clasificación con <code>when</code> (E05).</strong> Se compara con <code>&lt;=</code> (menor o igual), no con <code>&lt;</code>, porque la tabla del enunciado dice que <strong>100 kWh exactos es "bajo"</strong> y <strong>200 exactos es "moderado"</strong>. El <code>else</code> cubre todo lo que queda (mayor a 200 = "alto"). Los límites están como constantes en el <code>companion object</code>.</p>
+
+<p><strong>g) companion object.</strong> Es un contenedor de constantes y miembros estáticos de la clase (solo existe una copia, no depende de una instancia). Aquí vive el catálogo de límites: <code>POTENCIA_MAXIMA = 10000.0</code>, <code>HORAS_MAXIMA = 24.0</code>, <code>TARIFA_MAXIMA = 10.0</code>, <code>CONSUMO_BAJO = 100.0</code> y <code>CONSUMO_MODERADO = 200.0</code>. Especialmente en validaciones, tenerlas centralizadas evita errores y facilita cambiar reglas en un solo lugar.</p>
+
+<p><strong>h) El Intent y sus claves (E06).</strong> Se enviaron exactamente cuatro extras:</p>
+<table>
+  <tr><th>Clave (String literal)</th><th>Valor</th><th>Tipo</th></tr>
+  <tr><td>"nombre"</td><td>Nombre del usuario</td><td>String</td></tr>
+  <tr><td>"primario"</td><td>Consumo mensual (kWh)</td><td>Double</td></tr>
+  <tr><td>"secundario"</td><td>Costo mensual (S/)</td><td>Double</td></tr>
+  <tr><td>"clasificacion"</td><td>Texto de la clasificación</td><td>String</td></tr>
+</table>
+<p>Las claves deben escribirse <strong>idénticas</strong> en el envío y en la recepción; un solo carácter distinto hace que el extra no llegue y el dato quede en su valor por defecto. Los números viajan como <code>Double</code>, sin convertir a <code>String</code> (requisito explícito del enunciado).</p>
+
+<!-- ---------------- 5.7 ---------------- -->
+<h3 id="s57">5.7 ResultadoActivity.kt — <span class="etiqueta">E06</span> Recepción y presentación</h3>
+
+<p><strong>Qué se hizo:</strong> completar ViewBinding, recibir los extras, mostrar los cuatro datos y conectar el botón <em>Volver</em>.</p>
+
+<pre><code>package com.cibertec.electricidad
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+
+//E01
+import com.cibertec.electricidad.databinding.ActivityResultadoBinding
+
+// E01: agregar el import de ViewBinding después de habilitarlo en Gradle.
+class ResultadoActivity : AppCompatActivity() {
+    // E01: declarar la propiedad binding para activity_resultado.xml.
+
+    private lateinit var binding: ActivityResultadoBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // E01: reemplazar la carga provisional por la inflación con ViewBinding.
+        binding = ActivityResultadoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        mostrarResultado()
+
+        binding.buttonVolver.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun mostrarResultado(){
+        val nombre = intent.getStringExtra("nombre") ?: getString(R.string.valor_no_disponible)
+        val primario = intent.getDoubleExtra("primario",0.0)
+        val secundario = intent.getDoubleExtra("secundario", 0.0)
+        val clasificacion = intent.getStringExtra("clasificacion")?: getString(R.string.valor_no_disponible)
+
+        binding.textViewNombreResultado.text = getString(R.string.resultado_nombre_formato,nombre)
+        binding.textViewPrimario.text = getString(R.string.resultado_primario_formato, primario)
+        binding.textViewSecundario.text = getString(R.string.resultado_secundario_formato, secundario)
+        binding.textViewClasificacionResultado.text = clasificacion
+    }
+
+}</code></pre>
+
+<h4>Explicación</h4>
+<ul>
+  <li><strong>Mismo patrón de ViewBinding</strong> que MainActivity, pero con <code>ActivityResultadoBinding</code> (generado de <code>activity_resultado.xml</code>).</li>
+  <li><strong>onCreate</strong> hace tres cosas en orden: inflar, mostrar los datos (<code>mostrarResultado()</code>) y escuchar el botón <em>Volver</em>.</li>
+  <li><strong>Recepción de extras:</strong>
+    <ul>
+      <li><code>intent.getStringExtra("nombre")</code> devuelve el String; el operador <code>?:</code> (elvis) indica: "si por alguna razón no llega, usa el texto <code>valor_no_disponible</code>" para que la pantalla nunca muestre vacío.</li>
+      <li><code>intent.getDoubleExtra("primario", 0.0)</code> devuelve el Double con su valor por defecto <code>0.0</code>. Las claves son las mismas que usó MainActivity.</li>
+    </ul>
+  </li>
+  <li><strong>Presentación:</strong> cada TextView se actualiza con <code>.text = ...</code>:
+    <ul>
+      <li><code>resultado_nombre_formato</code> &rarr; "Resultado de Alvaro" (<code>%1$s</code> inserta el texto recibido).</li>
+      <li><code>resultado_primario_formato</code> &rarr; "Consumo mensual: 150.00 kWh" (<code>%1$.2f</code> formatea el Double con 2 decimales).</li>
+      <li><code>resultado_secundario_formato</code> &rarr; "Costo mensual: S/ 120.00".</li>
+      <li><code>textViewClasificacionResultado</code> recibe directamente el texto de clasificación (ya viene listo desde MainActivity).</li>
+    </ul>
+  </li>
+  <li><strong>buttonVolver &rarr; finish():</strong> cierra ResultadoActivity y regresa a MainActivity, que sigue en memoria: el formulario conserva todos los valores escritos. Por eso <em>no</em> se usa <code>startActivity</code> para volver.</li>
+  <li><strong>Esta Activity no calcula nada:</strong> toda la lógica vive en MainActivity, tal como pide el enunciado.</li>
+</ul>
+
+<!-- ================================================================ -->
+<h2 id="s6">6. Pruebas: casos de aceptación</h2>
+
+<p>Con esta tabla se verifica la app en el emulador. Los seis casos oficiales deben dar exactamente estos valores:</p>
+
+<table>
+  <tr><th>Entrada (nombre; potencia; horas; tarifa)</th><th>Consumo</th><th>Costo</th><th>Clasificación</th></tr>
+  <tr><td>Alvaro; 1000; 5; 0.8</td><td>150.00 kWh</td><td>S/ 120.00</td><td>Consumo moderado</td></tr>
+  <tr><td>Ana; 1000; 1; 1</td><td>30.00 kWh</td><td>S/ 30.00</td><td>Consumo bajo</td></tr>
+  <tr><td>Ana; 1000; 10; 0.5</td><td>300.00 kWh</td><td>S/ 150.00</td><td>Consumo alto</td></tr>
+  <tr><td>Ana; 2500; 2.5; 0.8</td><td>187.50 kWh</td><td>S/ 150.00</td><td>Consumo moderado</td></tr>
+  <tr><td>Ana; 1000; 5; 0.1</td><td>150.00 kWh</td><td>S/ 15.00</td><td>Consumo moderado</td></tr>
+  <tr><td>Ana; 1000; 5; 2</td><td>150.00 kWh</td><td>S/ 300.00</td><td>Consumo moderado</td></tr>
+</table>
+
+<h4>Pruebas negativas (debe permanecer en el formulario y mostrar el error)</h4>
+<table>
+  <tr><th>Campo</th><th>Entradas inválidas</th></tr>
+  <tr><td>Nombre</td><td>Vacío o solo espacios</td></tr>
+  <tr><td>Potencia</td><td>Vacía, texto, 0, 10001</td></tr>
+  <tr><td>Horas</td><td>Vacías, texto, 0, 25</td></tr>
+  <tr><td>Tarifa</td><td>Vacía, texto, 0, 11</td></tr>
+</table>
+
+<h4>Límites de clasificación</h4>
+<ul>
+  <li>Exactamente <strong>100 kWh</strong> &rarr; Consumo bajo (por eso se usa <code>&lt;=</code>).</li>
+  <li>Exactamente <strong>200 kWh</strong> &rarr; Consumo moderado.</li>
+</ul>
+
+<p><strong>Ejemplo de cálculo manual</strong> (primer caso): potencia 1000 W = 1 kW; 1 kW x 5 h x 30 días = <strong>150 kWh</strong>; 150 x 0.80 = <strong>S/ 120.00</strong>; 150 está entre 100 y 200 &rarr; <strong>moderado</strong>.</p>
+
+<!-- ================================================================ -->
+<h2 id="s7">7. Errores típicos que se corrigieron</h2>
+
+<p>Estos son los fallos que aparecieron durante el desarrollo y sirven como aprendizaje para futuras evaluaciones:</p>
+
+<table>
+  <tr><th>Error</th><th>Consecuencia</th><th>Corrección</th></tr>
+  <tr>
+    <td>Usar <code>//</code> como comentario en <code>strings.xml</code></td>
+    <td>XML inválido: falla la compilación de recursos (AAPT).</td>
+    <td>Comentario XML: <code>&lt;!-- ... --&gt;</code> o eliminarlo.</td>
+  </tr>
+  <tr>
+    <td>Funciones con <code>return</code> pero sin declarar <code>: Double</code></td>
+    <td>Error de compilación: Kotlin espera <code>Unit</code> y recibe <code>Double</code>.</td>
+    <td>Declarar el tipo de retorno: <code>fun calcularConsumo(...): Double</code>.</td>
+  </tr>
+  <tr>
+    <td>Usar constantes no declaradas (<code>CONSUMO_BAJO</code> sin definir)</td>
+    <td>Error de compilación: referencia no resuelta.</td>
+    <td>Agregarlas al <code>companion object</code>.</td>
+  </tr>
+  <tr>
+    <td>Mostrar el error de nombre en <code>inputLayoutPotencia</code></td>
+    <td>El error aparecía en el campo equivocado.</td>
+    <td>Asignarlo a <code>inputLayoutNombre</code>.</td>
+  </tr>
+  <tr>
+    <td>Comparar con <code>&lt;</code> en la clasificación</td>
+    <td>100 kWh daba "moderado" en vez de "bajo".</td>
+    <td>Usar <code>&lt;=</code> en los dos límites.</td>
+  </tr>
+  <tr>
+    <td>Tipo de clave mal escrito: <code>"secunario"</code> / <code>"secunadario"</code></td>
+    <td>El extra no llegaba: el costo se mostraba 0.00.</td>
+    <td>Las claves deben ser idénticas: <code>"secundario"</code>.</td>
+  </tr>
+  <tr>
+    <td>Llamar <code>getStringExtra(R.string.algo)</code></td>
+    <td>Error de compilación: ese método recibe un <code>String</code>, no un <code>Int</code> de recurso.</td>
+    <td>Usar <code>getStringExtra("clave")</code> con la clave enviada por la otra Activity.</td>
+  </tr>
+  <tr>
+    <td>Olvidar registrar la Activity en el Manifest</td>
+    <td><em>ActivityNotFoundException</em> y cierre abrupto de la app.</td>
+    <td>Declararla con <code>android:exported="false"</code>.</td>
+  </tr>
+</table>
+
+<div class="nota"><strong>Consejo final:</strong> antes de entregar, compilar con <em>Build &gt; Make Project</em> (o <code>gradlew assembleDebug</code>), probar los 6 casos válidos + los rechazos + los límites 100/200 kWh, y capturar dos pantallas: un resultado correcto y una validación fallida.</div>
+
+<p class="fin">Guía generada para la Primera Evaluación T01 — Variante C — Consumo eléctrico mensual. Curso: Desarrollo de Aplicaciones Móviles I, Cibertec.</p>
+
+</body>
+</html>
