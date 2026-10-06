@@ -24,7 +24,7 @@
     <string name="valor_no_disponible">Pendiente</string>
     <string name="error_calculo">El resultado supera el rango permitido para el cálculo</string>
 
-    //E03
+
     <string name="hint_tarifa">Tarifa por kWh</string>
     <string name="error_nombre">Ingrese su nombre</string>
     <string name="error_potencia">Ingrese una potencia mayor que 0 y hasta 10000</string>
